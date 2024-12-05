@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.UUID;
+import java.util.ArrayList;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,10 +20,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.util.StringUtils;
@@ -32,7 +31,7 @@ import com.example.ShopAppSelling.DTO.ProductDTO;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("${api.prefix}/products")
 public class ProductController {
 
     @GetMapping("") // http://localhost:8088/products?page=1&limit=10
@@ -43,7 +42,12 @@ public class ProductController {
     }
 
     private String storeFile(MultipartFile file) throws IOException {
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        String originalFileName = file.getOriginalFilename();
+        if (originalFileName == null) {
+            throw new IOException("Failed to get original filename");
+        }
+
+        String fileName = StringUtils.cleanPath(originalFileName);
         String uniqueFileName = UUID.randomUUID().toString() + "_" + fileName;
 
         Path uploadDir = Paths.get("uploads");
@@ -75,18 +79,26 @@ public class ProductController {
                         .map(FieldError::getDefaultMessage).toList();
                 return ResponseEntity.badRequest().body(errorMessages);
             }
-            if (productDTO.getFile() != null) {
-                if (productDTO.getFile().getSize() > 10 * 1024 * 1024) {
-                    return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
-                            .body("File size must be less than 10MB");
+
+            List<MultipartFile> files = productDTO.getFiles();
+            List<String> thumbnails = new ArrayList<>();
+
+            if (files != null && !files.isEmpty()) {
+                for (MultipartFile file : files) {
+                    if (file.getSize() > 10 * 1024 * 1024) {
+                        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
+                                .body("File size must be less than 10MB");
+                    }
+                    String contentType = file.getContentType();
+                    if (contentType == null || !contentType.startsWith("image/")) {
+                        return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                                .body("File must be an image");
+                    }
+                    String fileName = storeFile(file);
+                    String fileUrl = "/uploads/" + fileName;
+                    thumbnails.add(fileUrl);
                 }
-                String contentType = productDTO.getFile().getContentType();
-                if (contentType == null || !contentType.startsWith("image/")) {
-                    return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-                            .body("File must be an image");
-                }
-                String fileName = storeFile(productDTO.getFile());
-                productDTO.setThumbnail(fileName);
+                productDTO.setThumbnail(thumbnails);
             }
 
             return ResponseEntity.ok(String.format("createProduct: %s", productDTO));

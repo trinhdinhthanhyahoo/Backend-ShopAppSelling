@@ -1,5 +1,7 @@
 package com.example.ShopAppSelling.DTO;
 
+import java.util.List;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -30,12 +32,28 @@ public class ProductDTO {
     @NotNull(message = "Product price is required")
     private Float price;
 
-    private String thumbnail;
-
     private String description;
 
     @JsonProperty("category_id")
     private Long categoryId;
 
-    private MultipartFile file;
+    private List<MultipartFile> files;
+
+    private List<String> thumbnail;
+
+    public List<MultipartFile> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<MultipartFile> files) {
+        this.files = files;
+    }
+
+    public List<String> getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(List<String> thumbnail) {
+        this.thumbnail = thumbnail;
+    }
 }

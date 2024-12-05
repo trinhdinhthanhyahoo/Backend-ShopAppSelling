@@ -21,7 +21,7 @@ import com.example.ShopAppSelling.DTO.CategoriesDTO;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/categories")
+@RequestMapping("${api.prefix}/categories")
 public class CategoriesController {
 
     @GetMapping("") // http://localhost:8088/categories?page=1&limit=10
