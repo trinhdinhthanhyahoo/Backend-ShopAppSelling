@@ -2,7 +2,6 @@ package com.example.ShopAppSelling.Controller;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -13,12 +12,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.ShopAppSelling.DTO.UserDTO;
 import com.example.ShopAppSelling.DTO.UserLoginDTO;
+import com.example.ShopAppSelling.Services.IUserService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("${api.prefix}/users") // http://localhost:8088/users
+@RequiredArgsConstructor
 public class UserController {
+    private final IUserService userService;
+
     @PostMapping("/register") // http://localhost:8088/users/register
     public ResponseEntity<?> register(@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult) {
         try {
@@ -28,10 +32,12 @@ public class UserController {
                 return ResponseEntity.badRequest().body(errorMessages);
             }
             if (userDTO.getPassword().equals(userDTO.getRetypePassword())) {
+                userService.createUser(userDTO);
                 return ResponseEntity.ok(String.format("Register successfully: %s", userDTO));
             } else {
                 return ResponseEntity.badRequest().body("Password and retype password do not match");
             }
+
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(("Register failed"));
         }
@@ -39,7 +45,8 @@ public class UserController {
 
     @PostMapping("/login") // http://localhost:8088/users/login
     public ResponseEntity<String> login(@Valid @RequestBody UserLoginDTO userLoginDTO) {
-        return ResponseEntity.ok("token");
+        String token = userService.login(userLoginDTO);
+        return ResponseEntity.ok(token);
     }
 
 }
