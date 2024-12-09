@@ -14,10 +14,14 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Data
 @Builder
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductDTO {
@@ -39,7 +43,7 @@ public class ProductDTO {
 
     private List<MultipartFile> files;
 
-    private List<String> thumbnail;
+    private String thumbnail;
 
     public List<MultipartFile> getFiles() {
         return files;
@@ -49,11 +53,11 @@ public class ProductDTO {
         this.files = files;
     }
 
-    public List<String> getThumbnail() {
+    public String getThumbnail() {
         return thumbnail;
     }
 
-    public void setThumbnail(List<String> thumbnail) {
+    public void setThumbnail(String thumbnail) {
         this.thumbnail = thumbnail;
     }
 }

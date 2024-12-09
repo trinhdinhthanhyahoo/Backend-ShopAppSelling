@@ -31,7 +31,7 @@ public class ProductImage {
 
     @ManyToOne
     @JoinColumn(name = "product_id")
-    private com.example.ShopAppSelling.Models.Product product;
+    private Product product;
 
     @Column(name = "image_url", length = 300)
     private String imageUrl;

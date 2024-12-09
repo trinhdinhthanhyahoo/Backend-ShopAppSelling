@@ -18,12 +18,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("${api.prefix}/users") // http://localhost:8088/users
+@RequestMapping("${api.prefix}/users") // http://${api.prefix}/users
 @RequiredArgsConstructor
 public class UserController {
     private final IUserService userService;
 
-    @PostMapping("/register") // http://localhost:8088/users/register
+    @PostMapping("/register") // http://${api.prefix}/users/register
     public ResponseEntity<?> register(@Valid @RequestBody UserDTO userDTO, BindingResult bindingResult) {
         try {
             if (bindingResult.hasErrors()) {
@@ -43,7 +43,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/login") // http://localhost:8088/users/login
+    @PostMapping("/login") // http://${api.prefix}/users/login
     public ResponseEntity<String> login(@Valid @RequestBody UserLoginDTO userLoginDTO) {
         String token = userService.login(userLoginDTO);
         return ResponseEntity.ok(token);

@@ -25,16 +25,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.util.StringUtils;
-
 import com.example.ShopAppSelling.DTO.ProductDTO;
+import com.example.ShopAppSelling.Services.IProductService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("${api.prefix}/products")
+@RequiredArgsConstructor
 public class ProductController {
 
-    @GetMapping("") // http://localhost:8088/products?page=1&limit=10
+    private final IProductService productService;
+
+    @GetMapping("") // http://${api.prefix}/products?page=1&limit=10
     public ResponseEntity<String> getAllProducts(
             @RequestParam("page") int page,
             @RequestParam("limit") int limit) {
@@ -69,7 +73,7 @@ public class ProductController {
     // "description":"This is a new smartphone",
     // "category_id": 1
     // }
-    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE) // http://localhost:8088/products
+    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE) // http://${api.prefix}/products
     public ResponseEntity<?> createProduct(
             @Valid @ModelAttribute ProductDTO productDTO,
             BindingResult bindingResult) {
@@ -97,9 +101,12 @@ public class ProductController {
                     String fileName = storeFile(file);
                     String fileUrl = "/uploads/" + fileName;
                     thumbnails.add(fileUrl);
+
                 }
-                productDTO.setThumbnail(thumbnails);
+                productDTO.setThumbnail(thumbnails.get(0));
             }
+
+            productService.createProduct(productDTO);
 
             return ResponseEntity.ok(String.format("createProduct: %s", productDTO));
         } catch (Exception e) {
@@ -107,17 +114,18 @@ public class ProductController {
         }
     }
 
-    @PutMapping("/{id}") // http://localhost:8088/products/1
+    @PutMapping("/{id}") // http://${api.prefix}/products/1
     public ResponseEntity<String> updateProduct(@PathVariable Long id) {
         return ResponseEntity.ok("Product updated");
     }
 
-    @DeleteMapping("/{id}") // http://localhost:8088/products/1
+    @DeleteMapping("/{id}") // http://${api.prefix}/products/1
     public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
-        return ResponseEntity.ok("Product deleted");
+        productService.deleteProduct(id);
+        return ResponseEntity.status(HttpStatus.OK).body("Product is deleted successfully");
     }
 
-    @GetMapping("/{id}") // http://localhost:8088/products/1
+    @GetMapping("/{id}") // http://${api.prefix}/products/1
     public ResponseEntity<String> getProductById(@PathVariable Long id) {
         return ResponseEntity.ok("Product with id " + id);
     }
