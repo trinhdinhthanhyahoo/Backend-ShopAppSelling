@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Table;
 import jakarta.persistence.Entity;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -28,6 +29,7 @@ import lombok.Setter;
 @Builder
 @Entity
 @Table(name = "orders")
+
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,29 +39,29 @@ public class Order {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "fullname", length = 100)
+    @Column(name = "full_name", length = 100)
     private String fullName;
 
-    @Column(name = "email", length = 100)
+    @Column(name = "email", length = 150)
     private String email;
 
-    @Column(name = "phone_number", nullable = false, length = 100)
+    @Column(name = "phone_number", nullable = false, length = 10)
     private String phoneNumber;
 
-    @Column(name = "address", length = 100)
+    @Column(name = "address", nullable = false, length = 200)
     private String address;
 
     @Column(name = "note", length = 100)
     private String note;
 
-    @Column(name = "order_date")
-    private Date orderDate;
+    @Column(name = "orders_date")
+    private LocalDateTime orderDate;
 
-    @Column(name = "status")
+    @Column(name = "status", length = 20)
     private String status;
 
     @Column(name = "total_money")
-    private Double totalMoney;
+    private Float totalMoney;
 
     @Column(name = "shipping_method")
     private String shippingMethod;
@@ -68,7 +70,7 @@ public class Order {
     private String shippingAddress;
 
     @Column(name = "shipping_date")
-    private LocalDate shippingDate;
+    private LocalDateTime shippingDate;
 
     @Column(name = "tracking_number")
     private String trackingNumber;

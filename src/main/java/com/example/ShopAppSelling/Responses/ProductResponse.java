@@ -19,12 +19,12 @@ public class ProductResponse extends BaseEntity {
 
     private String name;
 
-    private Double price;
+    private Float price;
 
     private String description;
 
     @JsonProperty("category_id")
-    private Double categoryId;
+    private Long categoryId;
 
     private String thumbnail;
 

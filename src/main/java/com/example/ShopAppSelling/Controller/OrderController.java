@@ -51,12 +51,15 @@ public class OrderController {
             Order order = orderService.createOrder(orderDTO);
             return ResponseEntity.ok(order);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PutMapping("/{id}") // http://localhost:8088/orders/1
-    public ResponseEntity<?> updateOrder(@PathVariable Long id, @Valid @RequestBody OrderDTO orderDTO,
+    public ResponseEntity<?> updateOrder(
+            @PathVariable Long id,
+            @Valid @RequestBody OrderDTO orderDTO,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errorMessages = bindingResult.getFieldErrors().stream()
@@ -67,12 +70,12 @@ public class OrderController {
     }
 
     @DeleteMapping("/{id}") // http://localhost:8088/orders/1
-    public ResponseEntity<String> deleteOrder(@PathVariable Long id) {
+    public ResponseEntity<String> deleteOrder(@PathVariable Double id) {
         return ResponseEntity.status(HttpStatus.OK).body("Order is deleted successfully");
     }
 
     @GetMapping("/user/{user_id}") // http://localhost:8088/orders/user/1
-    public ResponseEntity<String> getOrderByUserId(@PathVariable Long user_id) {
+    public ResponseEntity<String> getOrderByUserId(@PathVariable Double user_id) {
         return ResponseEntity.ok("Order with user id " + user_id);
     }
 }

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,8 +21,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OrderDTO {
     @JsonProperty("user_id")
-    @Min(value = 1, message = "User ID must be greater than 0")
-    private Double userId;
+    @NotNull(message = "User ID is required")
+    private Long userId;
 
     @JsonProperty("full_name")
     private String fullName;
@@ -41,8 +42,8 @@ public class OrderDTO {
     private String note;
 
     @JsonProperty("total_money")
-    @Min(value = 0, message = "Total money must be greater than 0")
-    private Double totalMoney;
+    @Min(value = 0, message = "Total money must be greater than or equal to 0")
+    private Float totalMoney;
 
     @JsonProperty("shipping_method")
     private String shippingMethod;

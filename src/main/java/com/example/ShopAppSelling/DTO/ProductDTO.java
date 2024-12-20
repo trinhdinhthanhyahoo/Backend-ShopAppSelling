@@ -29,12 +29,12 @@ public class ProductDTO {
     @Min(value = 0, message = "Product price must be greater than 0")
     @Max(value = 10000000, message = "Product price must be less than 100,000,000")
     @NotNull(message = "Product price is required")
-    private Double price;
+    private Float price;
 
     private String description;
 
     @JsonProperty("category_id")
-    private Double categoryId;
+    private Long categoryId;
 
     // private List<MultipartFile> files;
 

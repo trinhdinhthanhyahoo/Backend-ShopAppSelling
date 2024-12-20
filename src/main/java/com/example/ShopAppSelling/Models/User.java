@@ -12,7 +12,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,7 +26,7 @@ import lombok.Setter;
 public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @Column(name = "full_name", length = 100)
     private String fullName;
@@ -42,18 +41,19 @@ public class User extends BaseEntity {
     private String password;
 
     @Column(name = "is_active")
-    private int isActive;
+    private Boolean isActive;
 
     @Column(name = "date_of_birth")
     private Date dateOfBirth;
 
     @Column(name = "facebook_account_id")
-    private int facebookAccountId;
+    private Integer facebookAccountId;
 
     @Column(name = "google_account_id")
-    private int googleAccountId;
+    private Integer googleAccountId;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
-    private com.example.ShopAppSelling.Models.Role role;
+    private Role role;
+
 }

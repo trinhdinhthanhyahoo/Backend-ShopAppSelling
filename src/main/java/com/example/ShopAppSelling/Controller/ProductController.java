@@ -124,7 +124,7 @@ public class ProductController {
     @PostMapping(value = "uploads/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     // POST http://localhost:8088/v1/api/products
     public ResponseEntity<?> uploadImages(
-            @PathVariable("id") Double productId,
+            @PathVariable("id") Long productId,
             @RequestParam("files") List<MultipartFile> files) {
         try {
             Product existingProduct = productService.getProductById(productId);
@@ -198,10 +198,10 @@ public class ProductController {
             }
             ProductDTO productDTO = ProductDTO.builder()
                     .name(productName)
-                    .price((double) faker.number().numberBetween(10, 90_000_000))
+                    .price((float) faker.number().numberBetween(10, 90_000_000))
                     .description(faker.lorem().sentence())
                     .thumbnail("")
-                    .categoryId((double) faker.number().numberBetween(2, 5))
+                    .categoryId((long) faker.number().numberBetween(2, 5))
                     .build();
             try {
                 productService.createProduct(productDTO);
@@ -213,7 +213,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}") // http://${api.prefix}/products/1
-    public ResponseEntity<String> updateProduct(@PathVariable Double id, @RequestBody ProductDTO productDTO) {
+    public ResponseEntity<String> updateProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO) {
         try {
             productService.updateProduct(id, productDTO);
 
@@ -225,17 +225,17 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}") // http://${api.prefix}/products/1
-    public ResponseEntity<?> deleteProduct(@PathVariable Double id) {
+    public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
         try {
             productService.deleteProduct(id);
-            return ResponseEntity.ok(String.format("Product with id = %f deleted successfully", id));
+            return ResponseEntity.ok(String.format("Product with id = %d deleted successfully", id));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @GetMapping("/{id}") // http://${api.prefix}/products/1
-    public ResponseEntity<?> getProductById(@PathVariable Double id) {
+    public ResponseEntity<?> getProductById(@PathVariable Long id) {
         try {
             return ResponseEntity.ok(productService.getProductById(id));
         } catch (Exception e) {

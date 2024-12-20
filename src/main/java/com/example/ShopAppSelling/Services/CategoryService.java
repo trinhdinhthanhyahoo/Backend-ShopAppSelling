@@ -25,7 +25,7 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public Category getCategoryById(Double id) {
+    public Category getCategoryById(Long id) {
         return categoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
     }
@@ -36,14 +36,14 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public Category updateCategory(Double categoryId, CategoriesDTO categoriesDTO) {
+    public Category updateCategory(Long categoryId, CategoriesDTO categoriesDTO) {
         Category existingCategory = getCategoryById(categoryId);
         existingCategory.setName(categoriesDTO.getName());
         return categoryRepository.save(existingCategory);
     }
 
     @Override
-    public void deleteCategory(Double id) {
+    public void deleteCategory(Long id) {
         categoryRepository.deleteById(id);
     }
 

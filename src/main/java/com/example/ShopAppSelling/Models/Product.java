@@ -13,12 +13,12 @@ import lombok.*;
 public class Product extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Double id;
+    private Long id;
 
     @Column(name = "name", nullable = false, length = 350)
     private String name;
 
-    private Double price;
+    private Float price;
 
     @Column(name = "thumbnail", length = 300)
     private String thumbnail;

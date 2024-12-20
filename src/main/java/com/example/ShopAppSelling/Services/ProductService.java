@@ -58,7 +58,7 @@ public class ProductService implements IProductService {
 
     @Override
     public ProductImage createProductImage(
-            Double productId,
+            Long productId,
             ProductImageDTO productImageDTO) throws Exception {
         Product existingProduct = productRepository
                 .findById(productId)
@@ -80,13 +80,13 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Product getProductById(Double id) throws Exception {
+    public Product getProductById(Long id) throws Exception {
         return productRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("Product not found" + id));
     }
 
     @Override
-    public Product updateProduct(Double id, ProductDTO productDTO) throws Exception {
+    public Product updateProduct(Long id, ProductDTO productDTO) throws Exception {
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found" + id));
 
@@ -102,7 +102,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public void deleteProduct(Double id) {
+    public void deleteProduct(Long id) {
         Optional<Product> existingProduct = productRepository.findById(id);
         existingProduct.ifPresent(productRepository::delete);
     }

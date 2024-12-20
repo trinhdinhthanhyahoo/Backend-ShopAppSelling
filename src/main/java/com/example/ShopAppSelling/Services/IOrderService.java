@@ -8,11 +8,11 @@ import com.example.ShopAppSelling.Models.Order;
 public interface IOrderService {
     Order createOrder(OrderDTO orderDTO) throws Exception;
 
-    Order getOrderById(Double id);
+    Order getOrderById(Long id);
 
     List<Order> getAllOrders();
 
-    Order updateOrder(Double orderId, OrderDTO orderDTO);
+    Order updateOrder(Long orderId, OrderDTO orderDTO);
 
-    void deleteOrder(Double id);
+    void deleteOrder(Long id);
 }

@@ -8,12 +8,12 @@ import com.example.ShopAppSelling.Models.Category;
 public interface ICategoryService {
     Category createCategory(CategoriesDTO categoriesDTO);
 
-    Category getCategoryById(Double id);
+    Category getCategoryById(Long id);
 
     List<Category> getAllCategories();
 
-    Category updateCategory(Double categoryId, CategoriesDTO categoriesDTO);
+    Category updateCategory(Long categoryId, CategoriesDTO categoriesDTO);
 
-    void deleteCategory(Double id);
+    void deleteCategory(Long id);
 
 }
