@@ -6,7 +6,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Table;
 import jakarta.persistence.Entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.ManyToOne;
@@ -33,25 +35,25 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private com.example.ShopAppSelling.Models.User user;
+    private User user;
 
-    @Column(name = "full_name", length = 100)
+    @Column(name = "fullname", length = 100)
     private String fullName;
 
     @Column(name = "email", length = 100)
     private String email;
 
-    @Column(name = "phone_number", length = 10)
+    @Column(name = "phone_number", nullable = false, length = 100)
     private String phoneNumber;
 
-    @Column(name = "address", length = 200)
+    @Column(name = "address", length = 100)
     private String address;
 
-    @Column(name = "note", length = 500)
+    @Column(name = "note", length = 100)
     private String note;
 
     @Column(name = "order_date")
-    private LocalDateTime orderDate;
+    private Date orderDate;
 
     @Column(name = "status")
     private String status;
@@ -59,26 +61,20 @@ public class Order {
     @Column(name = "total_money")
     private Double totalMoney;
 
-    @Column(name = "shippingDate")
-    private LocalDateTime shippingDate;
+    @Column(name = "shipping_method")
+    private String shippingMethod;
 
     @Column(name = "shipping_address")
     private String shippingAddress;
 
-    @Column(name = "shipping_method")
-    private String shippingMethod;
+    @Column(name = "shipping_date")
+    private LocalDate shippingDate;
 
     @Column(name = "tracking_number")
     private String trackingNumber;
 
     @Column(name = "payment_method")
     private String paymentMethod;
-
-    @Column(name = "payment_status")
-    private String paymentStatus;
-
-    @Column(name = "payment_date")
-    private LocalDateTime paymentDate;
 
     @Column(name = "active")
     private Boolean active;

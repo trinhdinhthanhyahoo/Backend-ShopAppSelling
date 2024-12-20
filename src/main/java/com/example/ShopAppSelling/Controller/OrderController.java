@@ -17,12 +17,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.ShopAppSelling.DTO.OrderDTO;
-
+import com.example.ShopAppSelling.Models.Order;
+import com.example.ShopAppSelling.Services.IOrderService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("${api.prefix}/orders")
+@RequiredArgsConstructor
 public class OrderController {
+
+    private final IOrderService orderService;
 
     @GetMapping("") // http://localhost:8088/orders?page=1&limit=10
     public ResponseEntity<String> getAllOrders(
@@ -32,14 +37,22 @@ public class OrderController {
     }
 
     @PostMapping("") // http://localhost:8088/orders
-    public ResponseEntity<?> createOrder(@Valid @RequestBody OrderDTO orderDTO,
-            BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            List<String> errorMessages = bindingResult.getFieldErrors().stream()
-                    .map(FieldError::getDefaultMessage).toList();
-            return ResponseEntity.badRequest().body(errorMessages);
+    public ResponseEntity<?> createOrder(
+            @Valid @RequestBody OrderDTO orderDTO,
+            BindingResult result) {
+        try {
+            if (result.hasErrors()) {
+                List<String> errorMessages = result.getFieldErrors()
+                        .stream()
+                        .map(FieldError::getDefaultMessage)
+                        .toList();
+                return ResponseEntity.badRequest().body(errorMessages);
+            }
+            Order order = orderService.createOrder(orderDTO);
+            return ResponseEntity.ok(order);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(String.format("createOrder: %s", orderDTO));
     }
 
     @PutMapping("/{id}") // http://localhost:8088/orders/1

@@ -2,7 +2,6 @@ package com.example.ShopAppSelling.Controller;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
@@ -20,7 +19,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -227,17 +225,21 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}") // http://${api.prefix}/products/1
-    public ResponseEntity<String> deleteProduct(@PathVariable Double id) {
+    public ResponseEntity<?> deleteProduct(@PathVariable Double id) {
         try {
             productService.deleteProduct(id);
-            return ResponseEntity.ok(String.format("Product with id = %d deleted successfully", id));
+            return ResponseEntity.ok(String.format("Product with id = %f deleted successfully", id));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @GetMapping("/{id}") // http://${api.prefix}/products/1
-    public ResponseEntity<String> getProductById(@PathVariable Double id) {
-        return ResponseEntity.ok("Product with id " + id);
+    public ResponseEntity<?> getProductById(@PathVariable Double id) {
+        try {
+            return ResponseEntity.ok(productService.getProductById(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

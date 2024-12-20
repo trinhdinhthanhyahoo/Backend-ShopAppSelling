@@ -16,7 +16,7 @@ public interface IProductService {
 
     Product updateProduct(Double id, ProductDTO productDTO) throws Exception;
 
-    void deleteProduct(Double id);
+    void deleteProduct(Double id) throws Exception;
 
     boolean existsByName(String name);
 
