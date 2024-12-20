@@ -1,10 +1,10 @@
 package com.example.ShopAppSelling.Services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
 import com.example.ShopAppSelling.DTO.ProductDTO;
@@ -15,6 +15,9 @@ import com.example.ShopAppSelling.Models.ProductImage;
 import com.example.ShopAppSelling.Repositories.CategoryRepository;
 import com.example.ShopAppSelling.Repositories.ProductImageRepository;
 import com.example.ShopAppSelling.Repositories.ProductRepository;
+import com.example.ShopAppSelling.Responses.ProductResponse;
+import com.example.ShopAppSelling.exceptions.DataNotFoundException;
+import com.example.ShopAppSelling.exceptions.InvalidParamException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,23 +35,31 @@ public class ProductService implements IProductService {
             Category existingCategory = categoryRepository.findById(productDTO.getCategoryId())
                     .orElseThrow(() -> new RuntimeException("Category not found" + productDTO.getCategoryId()));
 
-            Product newProduct = productRepository.save(Product.builder().name(productDTO.getName())
+            Product newProduct = Product.builder().name(productDTO.getName())
                     .price(productDTO.getPrice()).description(productDTO.getDescription())
-                    .thumbnail(productDTO.getThumbnail()).category(existingCategory).build());
+                    .thumbnail(productDTO.getThumbnail()).category(existingCategory).build();
 
-            return newProduct;
+            return productRepository.save(newProduct);
         } catch (Exception e) {
             throw new RuntimeException("Error creating product: " + e.getMessage());
         }
     }
 
     @Override
-    public Page<Product> getAllProducts(PageRequest pageRequest) {
-        try {
-            return productRepository.findAll(pageRequest);
-        } catch (Exception e) {
-            throw new RuntimeException("Not found products" + e.getMessage());
-        }
+    public Page<ProductResponse> getAllProducts(PageRequest pageRequest) {
+        return productRepository.findAll(pageRequest).map(product -> {
+            ProductResponse productResponse = ProductResponse.builder()
+                    .name(product.getName())
+                    .price(product.getPrice())
+                    .description(product.getDescription())
+                    .categoryId(product.getCategory().getId())
+                    .thumbnail(product.getThumbnail())
+                    .build();
+            productResponse.setCreatedAt(product.getCreatedAt());
+            productResponse.setUpdatedAt(product.getUpdatedAt());
+            return productResponse;
+        });
+
     }
 
     @Override
@@ -57,24 +68,36 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public ProductImage createProductImage(Long productId, ProductImageDTO productImageDTO) throws Exception {
-        Product existingProduct = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found" + productId));
-
-        ProductImage newProductImage = productImageRepository.save(ProductImage.builder().product(existingProduct)
-                .imageUrl(productImageDTO.getImageUrl()).build());
-
-        return newProductImage;
+    public ProductImage createProductImage(
+            Double productId,
+            ProductImageDTO productImageDTO) throws Exception {
+        Product existingProduct = productRepository
+                .findById(productId)
+                .orElseThrow(() -> new DataNotFoundException(
+                        "Cannot find product with id: " + productImageDTO.getProductId()));
+        ProductImage newProductImage = ProductImage.builder()
+                .product(existingProduct)
+                .imageUrl(productImageDTO.getImageUrl())
+                .build();
+        // Ko cho insert quá 5 ảnh cho 1 sản phẩm
+        List<ProductImage> images = (List<ProductImage>) productImageRepository.findByProductId(productId);
+        int size = images.size();
+        if (size >= ProductImage.MAXIMUM_IMAGES_PER_PRODUCT) {
+            throw new InvalidParamException(
+                    "Number of images must be <= "
+                            + ProductImage.MAXIMUM_IMAGES_PER_PRODUCT);
+        }
+        return productImageRepository.save(newProductImage);
     }
 
     @Override
-    public Product getProductById(long id) throws Exception {
+    public Product getProductById(Double id) throws Exception {
         return productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found" + id));
     }
 
     @Override
-    public Product updateProduct(long id, ProductDTO productDTO) throws Exception {
+    public Product updateProduct(Double id, ProductDTO productDTO) throws Exception {
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found" + id));
 
@@ -90,7 +113,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public void deleteProduct(long id) {
+    public void deleteProduct(Double id) {
         Optional<Product> existingProduct = productRepository.findById(id);
         existingProduct.ifPresent(productRepository::delete);
     }

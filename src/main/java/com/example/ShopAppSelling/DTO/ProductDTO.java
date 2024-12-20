@@ -25,39 +25,38 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductDTO {
-    private Long id;
 
     @NotBlank(message = "Product name is required")
     @Size(min = 3, max = 350, message = "Product name must be between 3 and 350 characters")
     private String name;
 
     @Min(value = 0, message = "Product price must be greater than 0")
-    @Max(value = 100000000, message = "Product price must be less than 100,000,000")
+    @Max(value = 10000000, message = "Product price must be less than 100,000,000")
     @NotNull(message = "Product price is required")
-    private Float price;
+    private Double price;
 
     private String description;
 
     @JsonProperty("category_id")
-    private Long categoryId;
+    private Double categoryId;
 
-    private List<MultipartFile> files;
+    // private List<MultipartFile> files;
 
     private String thumbnail;
 
-    public List<MultipartFile> getFiles() {
-        return files;
-    }
+    // public List<MultipartFile> getFiles() {
+    // return files;
+    // }
 
-    public void setFiles(List<MultipartFile> files) {
-        this.files = files;
-    }
+    // public void setFiles(List<MultipartFile> files) {
+    // this.files = files;
+    // }
 
-    public String getThumbnail() {
-        return thumbnail;
-    }
+    // public String getThumbnail() {
+    // return thumbnail;
+    // }
 
-    public void setThumbnail(String thumbnail) {
-        this.thumbnail = thumbnail;
-    }
+    // public void setThumbnail(String thumbnail) {
+    // this.thumbnail = thumbnail;
+    // }
 }

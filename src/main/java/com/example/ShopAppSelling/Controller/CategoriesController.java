@@ -51,20 +51,20 @@ public class CategoriesController {
     }
 
     @PutMapping("/{id}") // http://localhost:8088/categories/1
-    public ResponseEntity<?> updateCategory(@PathVariable Long id,
+    public ResponseEntity<?> updateCategory(@PathVariable Double id,
             @Valid @RequestBody CategoriesDTO categoriesDTO) {
         Category updatedCategory = categoryService.updateCategory(id, categoriesDTO);
         return ResponseEntity.ok(updatedCategory);
     }
 
     @DeleteMapping("/{id}") // http://localhost:8088/categories/1
-    public ResponseEntity<String> deleteCategory(@PathVariable Long id) {
+    public ResponseEntity<String> deleteCategory(@PathVariable Double id) {
         categoryService.deleteCategory(id);
         return ResponseEntity.status(HttpStatus.OK).body("Category is deleted successfully");
     }
 
     @GetMapping("/{id}") // http://localhost:8088/categories/1
-    public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
+    public ResponseEntity<Category> getCategoryById(@PathVariable Double id) {
         Category category = categoryService.getCategoryById(id);
         return ResponseEntity.ok(category);
     }

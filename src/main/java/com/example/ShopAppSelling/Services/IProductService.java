@@ -2,25 +2,24 @@ package com.example.ShopAppSelling.Services;
 
 import com.example.ShopAppSelling.DTO.ProductDTO;
 import com.example.ShopAppSelling.DTO.ProductImageDTO;
-import com.example.ShopAppSelling.exceptions.DataNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
 import com.example.ShopAppSelling.Models.*;
+import com.example.ShopAppSelling.Responses.ProductResponse;
 
 public interface IProductService {
     Product createProduct(ProductDTO productDTO) throws Exception;
 
-    Product getProductById(long id) throws Exception;
+    Product getProductById(Double id) throws Exception;
 
-    Page<Product> getAllProducts(PageRequest pageRequest);
+    Page<ProductResponse> getAllProducts(PageRequest pageRequest);
 
-    Product updateProduct(long id, ProductDTO productDTO) throws Exception;
+    Product updateProduct(Double id, ProductDTO productDTO) throws Exception;
 
-    void deleteProduct(long id);
+    void deleteProduct(Double id);
 
     boolean existsByName(String name);
 
-    ProductImage createProductImage(Long productId, ProductImageDTO productImageDTO) throws Exception;
+    ProductImage createProductImage(Double productId, ProductImageDTO productImageDTO) throws Exception;
 
 }
