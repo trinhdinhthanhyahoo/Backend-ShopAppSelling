@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface IUserService {
-    User createUser(UserDTO userDTO);
+    User createUser(UserDTO userDTO) throws Exception;
 
-    String login(UserLoginDTO userLoginDTO);
+    String login(UserLoginDTO userLoginDTO) throws Exception;
 
 }

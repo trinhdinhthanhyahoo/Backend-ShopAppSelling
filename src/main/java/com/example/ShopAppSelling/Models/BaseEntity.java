@@ -1,6 +1,5 @@
 package com.example.ShopAppSelling.Models;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;

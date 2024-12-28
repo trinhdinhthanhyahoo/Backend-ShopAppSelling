@@ -1,6 +1,13 @@
 package com.example.ShopAppSelling.Models;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,7 +30,7 @@ import lombok.Setter;
 @Builder
 @Entity
 @Table(name = "users")
-public class User extends BaseEntity {
+public class User extends BaseEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -31,7 +38,7 @@ public class User extends BaseEntity {
     @Column(name = "full_name", length = 100)
     private String fullName;
 
-    @Column(name = "phone_number", length = 10, nullable = false)
+    @Column(name = "phone_number", length = 10, nullable = false, unique = true)
     private String phoneNumber;
 
     @Column(name = "address", nullable = false, length = 200)
@@ -55,5 +62,38 @@ public class User extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
+        authorityList.add(new SimpleGrantedAuthority("ROLE_" + this.getRole().getName()));
+
+        return authorityList;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.phoneNumber;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 
 }

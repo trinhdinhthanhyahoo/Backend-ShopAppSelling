@@ -2,7 +2,6 @@ package com.example.ShopAppSelling.Controller;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -29,14 +28,19 @@ public class OrderController {
 
     private final IOrderService orderService;
 
-    @GetMapping("") // http://localhost:8088/orders?page=1&limit=10
-    public ResponseEntity<String> getAllOrders(
+    @GetMapping("") // http://localhost:8088/api/v1/orders?page=1&limit=10
+    public ResponseEntity<?> getAllOrders(
             @RequestParam("page") int page,
             @RequestParam("limit") int limit) {
-        return ResponseEntity.ok(String.format("getAllOrders Page: %d, Limit: %d", page, limit));
+        try {
+            List<Order> orders = orderService.getAllOrders();
+            return ResponseEntity.ok(orders);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
-    @PostMapping("") // http://localhost:8088/orders
+    @PostMapping("") // http://localhost:8088/api/v1/orders
     public ResponseEntity<?> createOrder(
             @Valid @RequestBody OrderDTO orderDTO,
             BindingResult result) {
@@ -56,26 +60,44 @@ public class OrderController {
         }
     }
 
-    @PutMapping("/{id}") // http://localhost:8088/orders/1
+    @PutMapping("/{id}") // http://localhost:8088/api/v1/orders/1
     public ResponseEntity<?> updateOrder(
-            @PathVariable Long id,
-            @Valid @RequestBody OrderDTO orderDTO,
-            BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            List<String> errorMessages = bindingResult.getFieldErrors().stream()
-                    .map(FieldError::getDefaultMessage).toList();
-            return ResponseEntity.badRequest().body(errorMessages);
+            @PathVariable("id") Long id,
+            @Valid @RequestBody OrderDTO orderDTO) {
+        try {
+            Order order = orderService.updateOrder(id, orderDTO);
+            return ResponseEntity.ok(order);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        return ResponseEntity.ok("Order updated");
     }
 
-    @DeleteMapping("/{id}") // http://localhost:8088/orders/1
-    public ResponseEntity<String> deleteOrder(@PathVariable Double id) {
-        return ResponseEntity.status(HttpStatus.OK).body("Order is deleted successfully");
+    @DeleteMapping("/{id}") // http://localhost:8088/api/v1/orders/1
+    public ResponseEntity<String> deleteOrder(@PathVariable Long id) {
+        try {
+            orderService.deleteOrder(id);
+            return ResponseEntity.ok("Order deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
-    @GetMapping("/user/{user_id}") // http://localhost:8088/orders/user/1
-    public ResponseEntity<String> getOrderByUserId(@PathVariable Double user_id) {
-        return ResponseEntity.ok("Order with user id " + user_id);
+    @GetMapping("/user/{user_id}") // http://localhost:8088/api/v1/orders/user/4
+    public ResponseEntity<?> getOrders(@Valid @PathVariable("user_id") Long userId) {
+        try {
+            List<Order> orders = orderService.getOrdersByUserId(userId);
+            return ResponseEntity.ok(orders);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{order_id}") // http://localhost:8088/api/v1/orders/1
+    public ResponseEntity<?> getOrderById(@PathVariable("order_id") Long orderId) {
+        try {
+            return ResponseEntity.ok(orderService.getOrderById(orderId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

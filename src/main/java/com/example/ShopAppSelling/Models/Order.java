@@ -6,9 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Table;
 import jakarta.persistence.Entity;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 import jakarta.persistence.Column;
@@ -21,6 +19,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,6 +30,7 @@ import lombok.Setter;
 @Builder
 @Entity
 @Table(name = "orders")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 
 public class Order {
     @Id
@@ -37,6 +39,7 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties({ "orders", "createdAt", "updatedAt" })
     private User user;
 
     @Column(name = "full_name", length = 100)
@@ -55,7 +58,7 @@ public class Order {
     private String note;
 
     @Column(name = "orders_date")
-    private LocalDateTime orderDate;
+    private Date orderDate;
 
     @Column(name = "status", length = 20)
     private String status;
@@ -70,7 +73,7 @@ public class Order {
     private String shippingAddress;
 
     @Column(name = "shipping_date")
-    private LocalDateTime shippingDate;
+    private LocalDate shippingDate;
 
     @Column(name = "tracking_number")
     private String trackingNumber;
